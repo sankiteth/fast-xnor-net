@@ -525,12 +525,13 @@ void xnor_net()
        #endif
 
        binarize_cycles /= N_BATCHES;
+       bin_activ_cycles/= N_BATCHES;
        conv_cycles     /= N_BATCHES;
        pool_cycles     /= N_BATCHES;
        fully_cycles    /= N_BATCHES;
        soft_cycles     /= N_BATCHES;
 
-       forward_cycles = (binarize_cycles + conv_cycles + pool_cycles + fully_cycles + soft_cycles);
+       forward_cycles = (binarize_cycles + bin_activ_cycles + conv_cycles + pool_cycles + fully_cycles + soft_cycles);
 
 
        bp_softmax_to_conv_cycles     /= N_BATCHES;
@@ -550,6 +551,7 @@ void xnor_net()
        printf("\nPER BATCH STATS\n");
        printf("EPOCH                 : %d\n\n", epoch+1);
        printf("binarize_cycles       : %.2f\n", binarize_cycles);
+       printf("bin_activ_cycles      : %.2f\n", bin_activ_cycles);
        printf("conv_cycles           : %.2f\n", conv_cycles);
        printf("pool_cycles           : %.2f\n", pool_cycles);
        printf("fully_cycles          : %.2f\n", fully_cycles);
