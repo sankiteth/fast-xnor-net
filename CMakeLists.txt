@@ -31,12 +31,12 @@ include_directories(include)
 if (CMAKE_C_COMPILER_ID MATCHES "Clang")
 
     # clang - CC flags
-    set(CMAKE_C_FLAGS "-O3 -fno-tree-vectorize -mavx2 -mfma -ffp-contract=fast -ffast-math")
+    set(CMAKE_C_FLAGS "-O3 -fno-tree-vectorize -ffp-contract=fast -ffast-math")
 
 elseif ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
 
     # GNU GCC - CC flags
-    set(CMAKE_C_FLAGS "-O3 -fno-tree-vectorize")
+    set(CMAKE_C_FLAGS "-O3 -fno-tree-vectorize -ffp-contract=fast -ffast-math")
 
 endif()
 

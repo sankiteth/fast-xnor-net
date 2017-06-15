@@ -15,7 +15,11 @@ cmake --build build --config Release
 
 ## How to run
 ```
-./bin/FNC_XNORNET
+To run vectorized binary Convolutional Neural Net:
+./bin/FNC_XNORNET 1
+
+To run vectorized XNOR Convolutional Neural Net:
+./bin/FNC_XNORNET 2
 ```
 
 ## Project Structure
