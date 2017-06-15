@@ -13,6 +13,7 @@ int NUM_TRAIN;
 int N_BATCHES;
 int TOTAL_FLOPS;
 double MULTIPLIER;
+int NET_TYPE;
 
 int* shuffle_index;
 
@@ -74,11 +75,38 @@ double update_conv_biases_cycles;
 
 int main(int argc, char* argv[])
 {
+	printf("starting program\n");
+
+	if (argc < 2)
+	{
+		printf("Please enter the net type(1->BINARY_NET, 2->XNOR_NET) which you want to run\n");
+		return;
+	}
+
+	NET_TYPE = argv[1][0] - '0';
+
+	if (NET_TYPE == 1)
+	{
+		TOTAL_FLOPS = BINARY_FLOPS;
+	}
+	else if (NET_TYPE == 2)
+	{
+		TOTAL_FLOPS = XNOR_FLOPS;
+	}
+	else
+	{
+		printf("Wrong net type entered. Please enter (1->BINARY_NET, 2->XNOR_NET)\n");
+		return;
+	}
+
     perf_init();
-    TOTAL_FLOPS = 0;
+
+    #ifdef COUNT_FLOPS
+    	TOTAL_FLOPS = 0;
+    #endif
+
     MULTIPLIER = (LEARN_RATE/BATCH_SIZE);
 
-    printf("starting program\n");
 
     //test_offset();
     //test_reverse_int();
@@ -149,11 +177,11 @@ int main(int argc, char* argv[])
 
     N_BATCHES = COUNT_BATCHES;
 
-    if (BINARY_NET == 0)
+    if (NET_TYPE == 0)
     {
         normal_net();
     }
-    else if (BINARY_NET == 1)
+    else if (NET_TYPE == 1)
     {
         binary_net();
     }
@@ -251,7 +279,7 @@ void normal_net()
                 val_acc = validate();
 
                 printf("\nNetType=%d, Epoch=%3d, Batch=%3d, train_acc=%3.2f val_acc=%3.2f \n",
-                            BINARY_NET, epoch+1, i+1, train_acc, val_acc);
+                            NET_TYPE, epoch+1, i+1, train_acc, val_acc);
                 /*printf("\nPred\n");
                 print_tensor_1d(&softmax_out, 10, 0);
                 printf("Label: %d\n", labels[ shuffle_index[i*BATCH_SIZE] ]);*/
@@ -366,7 +394,7 @@ void binary_net()
                 val_acc = bin_validate();
 
                 printf("\nNetType=%d, Epoch=%3d, Batch=%3d, train_acc=%3.2f% val_acc=%3.2f% \n",
-                            BINARY_NET, epoch+1, i+1, train_acc, val_acc);
+                            NET_TYPE, epoch+1, i+1, train_acc, val_acc);
                 printf("\nPred\n");
                 print_tensor_1d(&softmax_out, 10, 0);
                 printf("Label: %d\n", labels[ shuffle_index[i*BATCH_SIZE] ]);
@@ -388,7 +416,7 @@ void binary_net()
             train_acc = (correct_preds*100.0) / NUM_TRAIN;
             val_acc = bin_validate();
             printf("\nNetType=%d, Epoch=%3d, train_acc=%3.2f val_acc=%3.2f \n",
-                                BINARY_NET, epoch+1, train_acc, val_acc);
+                                NET_TYPE, epoch+1, train_acc, val_acc);
         #endif
 
         binarize_cycles /= N_BATCHES;
@@ -528,7 +556,7 @@ void xnor_net()
                 val_acc = xnor_validate();
 
                 printf("\nNetType=%d, Epoch=%3d, Batch=%3d, train_acc=%3.2f% val_acc=%3.2f% \n",
-                                BINARY_NET, epoch+1, i+1, train_acc, val_acc);
+                                NET_TYPE, epoch+1, i+1, train_acc, val_acc);
             }*/
 
             reset_to_zero(&del_max_pool);
@@ -543,7 +571,7 @@ void xnor_net()
             train_acc = (correct_preds*100.0) / NUM_TRAIN;
             val_acc = xnor_validate();
             printf("\nNetType=%d, Epoch=%3d, train_acc=%3.2f val_acc=%3.2f \n",
-                                    BINARY_NET, epoch+1, train_acc, val_acc);
+                                    NET_TYPE, epoch+1, train_acc, val_acc);
         #endif
 
         binarize_cycles /= N_BATCHES;
